@@ -431,9 +431,8 @@ class FlexboxHelper {
             }
 
             if (toIndex != NO_POSITION
-                    && mIndexToFlexLine != null
-                    && mIndexToFlexLine[toIndex] != NO_POSITION
-                    && i >= toIndex
+                    && flexLines.size() > 0
+                    && flexLines.get(flexLines.size() - 1).mLastIndex >= toIndex
                     && !reachedToIndex) {
                 sumCrossSize = 0;
                 reachedToIndex = true;
@@ -670,8 +669,8 @@ class FlexboxHelper {
             }
 
             if (toIndex != NO_POSITION
-                    && mIndexToFlexLine != null
-                    && mIndexToFlexLine[toIndex] != NO_POSITION
+                    && flexLines.size() > 0
+                    && flexLines.get(flexLines.size() - 1).mLastIndex >= toIndex
                     && i >= toIndex
                     && !reachedToIndex) {
                 sumCrossSize = 0;
@@ -1662,12 +1661,12 @@ class FlexboxHelper {
      * @param isRtl    {@code true} if the layout direction is right to left, {@code false}
      *                 otherwise
      * @param left     the left position of the flex line where the View belongs to. The actual
-     *                 View's left position is shifted depending on the isRtl and alignItems
+     *                 View's left position is shifted depending on the isLayoutRtl and alignItems
      *                 attributes
      * @param top      the top position of the View, which the View's margin is already taken
      *                 into account
      * @param right    the right position of the flex line where the View belongs to. The actual
-     *                 View's right position is shifted depending on the isRtl and alignItems
+     *                 View's right position is shifted depending on the isLayoutRtl and alignItems
      *                 attributes
      * @param bottom   the bottom position of the View, which the View's margin is already taken
      *                 into account
@@ -1819,6 +1818,10 @@ class FlexboxHelper {
         assert mMeasureSpecCache != null;
 
         int fromFlexLine = mIndexToFlexLine[fromFlexItem];
+        if (fromFlexLine == NO_POSITION) {
+            fromFlexLine = 0;
+        }
+
         // Deleting from the last to avoid unneeded copy it happens when deleting the middle of the
         // item in the ArrayList
         for (int i = flexLines.size() - 1; i >= fromFlexLine; i--) {
